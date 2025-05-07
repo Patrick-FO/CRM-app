@@ -1,8 +1,15 @@
 package com.example.crmapp.domain.model
 
-/*fun UserResponse.toDomain(): UserEntity {
-    return UserEntity(
+import com.example.crmapp.api.responses.ContactResponse
+import com.example.crmapp.domain.model.entities.ContactEntity
+
+fun ContactResponse.toDomain(): ContactEntity {
+    return ContactEntity(
         id = this.id,
-        username = this.username,
+        name = this.name,
+        userId = this.userId,
+        company = this.company,
+        phoneNumber = this.phoneNumber,
+        contactEmail = this.contactEmail
     )
-}*/
+}

@@ -1,6 +1,5 @@
 package com.example.crmapp.data.repository
 
-import com.example.crmapp.api.instances.UserApiClient.userApiService
 import com.example.crmapp.api.interfaces.UserApiService
 import com.example.crmapp.api.requests.UserRequest
 import com.example.crmapp.domain.model.entities.JwtEntity
@@ -8,7 +7,7 @@ import com.example.crmapp.domain.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class UserRepositoryImpl(userApiService: UserApiService): UserRepository {
+class UserRepositoryImpl(private val userApiService: UserApiService): UserRepository {
 
     override suspend fun createUser(username: String, password: String): Result<Boolean> =
         withContext(Dispatchers.IO) {
