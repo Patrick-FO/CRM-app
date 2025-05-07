@@ -4,7 +4,7 @@ import java.util.UUID
 
 data class ContactResponse(
     val id: Int,
-    val userId: UUID,
+    val userId: String,
     val name: String,
     val company: String?,
     val phoneNumber: String?,
