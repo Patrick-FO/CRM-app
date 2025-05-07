@@ -9,17 +9,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class UserRepositoryImpl(userApiService: UserApiService): UserRepository {
-    override suspend fun createUser(username: String, password: String): Result<String> =
+
+    override suspend fun createUser(username: String, password: String): Result<Boolean> =
         withContext(Dispatchers.IO) {
             try {
                 val userRequest = UserRequest(username, password)
                 val response = userApiService.createUser(userRequest)
 
                 if(response.isSuccessful) {
-                    val idFromHeader = response.headers()["id"]
-                        ?: return@withContext Result.failure(Exception("Empty response header"))
-
-                    Result.success(idFromHeader)
+                    Result.success(true)
                 } else {
                     Result.failure(Exception("Error creating user: ${response.code()} ${response.message()}"))
                 }
