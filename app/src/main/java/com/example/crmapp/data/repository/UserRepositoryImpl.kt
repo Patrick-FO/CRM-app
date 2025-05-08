@@ -25,6 +25,7 @@ class UserRepositoryImpl(private val userApiService: UserApiService): UserReposi
             }
         }
 
+    //TODO put the userId fetching logic into a usecase?
     override suspend fun loginUser(username: String, password: String): Result<JwtEntity> =
         withContext(Dispatchers.IO) {
             try {
