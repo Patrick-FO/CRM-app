@@ -7,6 +7,8 @@ import com.example.crmapp.domain.usecase.interfaces.ContactUseCase
 class ContactUseCaseImpl(
     private val contactRepository: ContactRepository
 ): ContactUseCase {
+    //TODO Consider adding basic email and phone number validation for these
+
     override suspend fun getAllContacts(userId: String): Result<List<ContactEntity>> {
         if(userId.isBlank()) {
             return Result.failure(IllegalArgumentException("User ID must not be blank"))
@@ -20,9 +22,9 @@ class ContactUseCaseImpl(
             return Result.failure(IllegalArgumentException("User ID must not be blank"))
         }
 
-        if(contactId <= 0)(
+        if(contactId <= 0) {
             return Result.failure(IllegalArgumentException("Contact ID must be 1 or greater"))
-        )
+        }
 
         return contactRepository.getContactById(userId, contactId)
     }
