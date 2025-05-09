@@ -44,10 +44,13 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
     implementation("com.google.code.gson:gson:2.13.1")
 
     // Koin
-    implementation("io.insert-koin:koin-android:4.1.0-Beta7")
+    implementation("io.insert-koin:koin-android:3.4.0")
+    implementation("io.insert-koin:koin-androidx-viewmodel:3.4.0")
+    implementation("io.insert-koin:koin-androidx-compose:3.4.0")
 
     // Navigation Component
     implementation("androidx.navigation:navigation-fragment:2.8.4")
