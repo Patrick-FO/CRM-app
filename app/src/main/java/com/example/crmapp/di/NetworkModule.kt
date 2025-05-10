@@ -1,5 +1,6 @@
 package com.example.crmapp.di
 
+import com.example.crmapp.api.interceptor.AuthInterceptor
 import com.example.crmapp.api.interfaces.ContactApiService
 import com.example.crmapp.api.interfaces.NoteApiService
 import com.example.crmapp.api.interfaces.UserApiService
@@ -13,6 +14,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 val networkModule = module {
+    single { AuthInterceptor(get()) }
+
     single<Gson> {
         GsonBuilder().create()
     }
@@ -25,6 +28,7 @@ val networkModule = module {
 
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
+            .addInterceptor(get<AuthInterceptor>())
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)

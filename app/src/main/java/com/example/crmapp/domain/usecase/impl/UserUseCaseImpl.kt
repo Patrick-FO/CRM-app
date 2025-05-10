@@ -1,6 +1,5 @@
 package com.example.crmapp.domain.usecase.impl
 
-import com.example.crmapp.domain.model.entities.JwtEntity
 import com.example.crmapp.domain.repository.UserRepository
 import com.example.crmapp.domain.usecase.interfaces.UserUseCase
 
@@ -19,11 +18,36 @@ class UserUseCaseImpl(
         return userRepository.createUser(username, password)
     }
 
-    override suspend fun loginUser(username: String, password: String): Result<JwtEntity> {
+    override suspend fun loginUser(username: String, password: String): Result<String> {
         if(username.isBlank() || password.isBlank()) {
             return Result.failure(IllegalArgumentException("Both a username and password are required"))
         }
 
         return userRepository.loginUser(username, password)
+    }
+
+    override suspend fun getUserId(username: String, password: String): Result<String> {
+        if(username.isBlank() || password.isBlank()) {
+            return Result.failure(IllegalArgumentException("Both a username and password are required"))
+        }
+
+        return userRepository.getUserId(username, password)
+    }
+
+    override suspend fun isUserLoggedIn(): Boolean {
+        return userRepository.isUserLoggedIn()
+    }
+
+    override suspend fun getStoredJwt(): String? {
+        return userRepository.getStoredJwt()
+    }
+
+    override suspend fun logoutUser(): Result<Boolean> {
+        return try {
+            userRepository.logoutUser()
+            Result.success(true)
+        } catch(e: Exception) {
+            Result.failure(e)
+        }
     }
 }

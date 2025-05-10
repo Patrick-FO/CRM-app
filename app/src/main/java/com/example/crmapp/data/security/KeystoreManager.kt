@@ -21,7 +21,6 @@ class KeystoreManager {
         load(null)
     }
 
-    // Create or get the encryption key
     private fun getKey(): SecretKey {
         if (!keyStore.containsAlias(KEY_ALIAS)) {
             val keyGenerator = KeyGenerator.getInstance(
@@ -44,7 +43,6 @@ class KeystoreManager {
         }
     }
 
-    // Encrypt the token
     fun encryptToken(token: String): EncryptedData {
         val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.ENCRYPT_MODE, getKey())
@@ -58,7 +56,6 @@ class KeystoreManager {
         )
     }
 
-    // Decrypt the token
     fun decryptToken(encryptedData: EncryptedData): String {
         val cipher = Cipher.getInstance(TRANSFORMATION)
         val iv = Base64.decode(encryptedData.iv, Base64.DEFAULT)
@@ -75,7 +72,6 @@ class KeystoreManager {
         return String(decryptedBytes, Charsets.UTF_8)
     }
 
-    // Data class to store encrypted data and IV
     data class EncryptedData(
         val encryptedData: String,
         val iv: String

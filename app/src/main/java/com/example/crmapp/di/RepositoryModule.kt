@@ -9,7 +9,7 @@ import com.example.crmapp.domain.repository.UserRepository
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single<UserRepository> { UserRepositoryImpl(get()) }
+    single<UserRepository> { UserRepositoryImpl(get(), get()) }
     single<ContactRepository> { ContactRepositoryImpl(get()) }
     single<NoteRepository> { NoteRepositoryImpl(get()) }
 }
