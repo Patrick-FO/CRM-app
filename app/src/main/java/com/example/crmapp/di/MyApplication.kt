@@ -1,15 +1,17 @@
-package com.example.crmapp
+package com.example.crmapp.di
 
 import android.app.Application
+import com.example.crmapp.di.modules.appModule
+import com.example.crmapp.di.modules.networkModule
+import com.example.crmapp.di.modules.repositoryModule
+import com.example.crmapp.di.modules.securityModule
+import com.example.crmapp.di.modules.stateModule
+import com.example.crmapp.di.modules.useCaseModule
+import com.example.crmapp.di.modules.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.logger.Level
-import com.example.crmapp.di.appModule
-import com.example.crmapp.di.networkModule
-import com.example.crmapp.di.repositoryModule
-import com.example.crmapp.di.useCaseModule
-import com.example.crmapp.di.viewModelModule
 
 
 class MyApplication: Application() {
@@ -22,6 +24,8 @@ class MyApplication: Application() {
             androidContext(this@MyApplication)
             modules(listOf(
                 appModule,
+                securityModule,
+                stateModule,
                 repositoryModule,
                 useCaseModule,
                 viewModelModule,

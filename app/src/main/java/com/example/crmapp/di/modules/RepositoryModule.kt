@@ -1,4 +1,4 @@
-package com.example.crmapp.di
+package com.example.crmapp.di.modules
 
 import com.example.crmapp.data.repository.ContactRepositoryImpl
 import com.example.crmapp.data.repository.NoteRepositoryImpl

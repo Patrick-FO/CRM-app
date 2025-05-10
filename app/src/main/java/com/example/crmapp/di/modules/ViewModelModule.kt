@@ -1,4 +1,4 @@
-package com.example.crmapp.di
+package com.example.crmapp.di.modules
 
 import com.example.crmapp.viewmodels.ContactScreenViewModel
 import com.example.crmapp.viewmodels.HomeScreenViewModel
@@ -10,6 +10,6 @@ import org.koin.dsl.module
 val viewModelModule = module {
     viewModel { ContactScreenViewModel(get(), get()) }
     viewModel { HomeScreenViewModel(get()) }
-    viewModel { LoginViewModel(get()) }
+    viewModel { LoginViewModel(get(), get()) }
     viewModel { SignupViewModel(get()) }
 }

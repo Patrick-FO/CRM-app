@@ -1,4 +1,4 @@
-package com.example.crmapp.di
+package com.example.crmapp.di.modules
 
 import com.example.crmapp.api.interceptor.AuthInterceptor
 import com.example.crmapp.api.interfaces.ContactApiService
