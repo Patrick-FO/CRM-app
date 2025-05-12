@@ -16,7 +16,9 @@ import com.example.crmapp.views.SignupView
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun Navigation(navController: NavHostController = rememberNavController()) {
+fun Navigation(
+    navController: NavHostController = rememberNavController()
+) {
     NavHost(
         navController = navController,
         startDestination = Screen.LoginScreen.route

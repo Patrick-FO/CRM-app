@@ -9,7 +9,7 @@ import com.example.crmapp.domain.usecase.interfaces.UserUseCase
 import org.koin.dsl.module
 
 val useCaseModule = module {
-    factory<UserUseCase> { UserUseCaseImpl(get()) }
+    factory<UserUseCase> { UserUseCaseImpl(get(), get()) }
     factory<ContactUseCase> { ContactUseCaseImpl(get()) }
     factory<NoteUseCase> { NoteUseCaseImpl(get()) }
 }

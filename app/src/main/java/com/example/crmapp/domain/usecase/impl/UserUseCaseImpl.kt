@@ -1,10 +1,12 @@
 package com.example.crmapp.domain.usecase.impl
 
+import com.example.crmapp.data.state.AppState
 import com.example.crmapp.domain.repository.UserRepository
 import com.example.crmapp.domain.usecase.interfaces.UserUseCase
 
 class UserUseCaseImpl(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val appState: AppState
 ): UserUseCase {
     override suspend fun createUser(username: String, password: String): Result<Boolean> {
         if(username.isBlank()) {
@@ -23,7 +25,9 @@ class UserUseCaseImpl(
             return Result.failure(IllegalArgumentException("Both a username and password are required"))
         }
 
-        return userRepository.loginUser(username, password)
+        val result = userRepository.loginUser(username, password)
+        appState.setAuthState()
+        return result
     }
 
     override suspend fun getUserId(username: String, password: String): Result<String> {
@@ -45,6 +49,7 @@ class UserUseCaseImpl(
     override suspend fun logoutUser(): Result<Boolean> {
         return try {
             userRepository.logoutUser()
+            appState.setAuthState()
             Result.success(true)
         } catch(e: Exception) {
             Result.failure(e)

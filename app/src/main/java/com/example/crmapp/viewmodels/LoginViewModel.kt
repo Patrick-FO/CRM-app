@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val appState: AppState
+    private val userUseCase: UserUseCase
 ) : ViewModel() {
 
     private val _isLoading = MutableStateFlow(false)
@@ -40,7 +40,7 @@ class LoginViewModel(
         _toastMessage.value = null
     }
 
-    fun registerOnClick() {
+    fun loginOnClick() {
         viewModelScope.launch {
             try {
                 _isLoading.value = true
@@ -52,19 +52,17 @@ class LoginViewModel(
                     return@launch
                 }
 
-                val result = userUseCase.createUser(username.value, password.value)
+                val result = userUseCase.loginUser(username.value, password.value)
 
-                // Handle the result
                 if (result.isSuccess) {
-                    _toastMessage.value = "Account created successfully"
-                    // Success case - you might want to navigate or show a message
-                    // This will depend on how you want to structure your app
+                    _toastMessage.value = "Successfully logged in"
+                    _password.value = ""
                 } else {
                     _error.value = result.exceptionOrNull()?.message ?: "Unknown error occurred"
                     _toastMessage.value = "An error occurred, please try again"
                 }
             } catch (e: Exception) {
-                _error.value = e.message ?: "An error occurred during registration"
+                _error.value = e.message ?: "An error occurred during login"
                 _toastMessage.value = "An error occurred, please try again"
             } finally {
                 _isLoading.value = false

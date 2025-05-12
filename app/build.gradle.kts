@@ -48,13 +48,15 @@ dependencies {
     implementation("com.google.code.gson:gson:2.13.1")
 
     // Koin
-    implementation("io.insert-koin:koin-android:3.4.0")
-    implementation("io.insert-koin:koin-androidx-viewmodel:3.4.0")
-    implementation("io.insert-koin:koin-androidx-compose:3.4.0")
+    implementation("io.insert-koin:koin-core:3.5.0")
+    implementation("io.insert-koin:koin-android:3.5.0")
+    //implementation("io.insert-koin:koin-androidx-viewmodel:3.5.0")
+    implementation("io.insert-koin:koin-androidx-compose:3.5.0")
 
     // Navigation Component
-    implementation("androidx.navigation:navigation-fragment:2.8.4")
-    implementation("androidx.navigation:navigation-ui:2.8.4")
+    implementation("androidx.navigation:navigation-fragment:2.9.0")
+    implementation("androidx.navigation:navigation-ui:2.9.0")
+    implementation("androidx.navigation:navigation-compose:2.9.0")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
