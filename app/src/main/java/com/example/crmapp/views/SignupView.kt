@@ -57,7 +57,10 @@ fun SignupView(
         )
 
         Button(
-            onClick = { viewModel.registerOnClick() },
+            onClick = {
+                viewModel.registerOnClick()
+                navController.navigate("login_screen")
+                      },
             enabled = !isLoading
         ) {
             Text(text = "Register")
