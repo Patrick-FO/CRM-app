@@ -9,5 +9,5 @@ fun HomeView(
     viewModel: HomeScreenViewModel,
     navController: NavController
 ) {
-    //Development branch
+
 }
