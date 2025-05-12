@@ -36,24 +36,14 @@ class UserRepositoryImpl(
                 val response = userApiService.getJwtToken(userRequest)
 
                 if(response.isSuccessful) {
-                    val jwtResponseCall = response.body()
+                    val jwtResponse = response.body()
                         ?: return@withContext Result.failure(Exception("Empty JWT response"))
 
-                    val innerResponse = jwtResponseCall.execute()
+                    val jwtToken = jwtResponse.token
 
-                    if(innerResponse.isSuccessful) {
-                        val jwtResponse = innerResponse.body()
-                            ?: return@withContext Result.failure(Exception("Empty JWT data"))
+                    jwtStorage.saveJwt(jwtToken)
 
-                        val jwtToken = jwtResponse.token
-
-                        jwtStorage.saveJwt(jwtToken)
-
-                        Result.success(jwtToken)
-                    } else {
-                        return@withContext Result.failure(Exception("JWT extraction failed: ${innerResponse.code()} ${innerResponse.message()}"))
-                    }
-
+                    Result.success(jwtToken)
                 } else {
                     Result.failure(Exception("Login failed: ${response.code()} ${response.message()}"))
                 }

@@ -39,7 +39,7 @@ fun LoginView(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Create a new account")
+        Text(text = "Login")
 
         OutlinedTextField(
             value = viewModel.username.collectAsState().value,

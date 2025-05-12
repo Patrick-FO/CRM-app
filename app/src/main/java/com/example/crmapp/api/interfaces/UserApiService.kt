@@ -12,5 +12,5 @@ interface UserApiService {
     suspend fun createUser(@Body request: UserRequest): Response<Unit>
 
     @POST("auth")
-    suspend fun getJwtToken(@Body request: UserRequest): Response<Call<JwtResponse>>
+    suspend fun getJwtToken(@Body request: UserRequest): Response<JwtResponse>
 }
