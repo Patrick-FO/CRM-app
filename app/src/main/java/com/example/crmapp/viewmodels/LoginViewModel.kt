@@ -10,7 +10,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val userUseCase: UserUseCase
+    private val userUseCase: UserUseCase,
+    private val appState: AppState
 ) : ViewModel() {
 
     private val _isLoading = MutableStateFlow(false)
@@ -55,6 +56,10 @@ class LoginViewModel(
                 val result = userUseCase.loginUser(username.value, password.value)
 
                 if (result.isSuccess) {
+                    appState.setUserId(
+                        userUseCase.getUserId(username.value, password.value).getOrNull()
+                    )
+
                     _toastMessage.value = "Successfully logged in"
                     _password.value = ""
                 } else {

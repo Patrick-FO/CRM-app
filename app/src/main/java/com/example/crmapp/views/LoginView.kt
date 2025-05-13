@@ -16,12 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.navigation.NavController
+import com.example.crmapp.data.state.AppState
 import com.example.crmapp.viewmodels.LoginViewModel
 
 @Composable
 fun LoginView(
     viewModel: LoginViewModel,
-    navController: NavController
+    navController: NavController,
+    appState: AppState
 ) {
     val toastMessage by viewModel.toastMessage.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -57,7 +59,12 @@ fun LoginView(
         )
 
         Button(
-            onClick = { viewModel.loginOnClick() },
+            onClick = {
+                viewModel.loginOnClick()
+                if(appState.authState.value) {
+                    navController.navigate("home_screen")
+                }
+                      },
             enabled = !isLoading
         ) {
             Text(text = "Login")
