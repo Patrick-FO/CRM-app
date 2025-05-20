@@ -1,8 +1,5 @@
 package com.example.crmapp.viewmodels
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.crmapp.data.state.AppState
@@ -10,143 +7,159 @@ import com.example.crmapp.domain.model.entities.ContactEntity
 import com.example.crmapp.domain.usecase.interfaces.ContactUseCase
 import com.example.crmapp.domain.usecase.interfaces.UserUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class HomeScreenViewModel(
+    private val userUseCase: UserUseCase,
     private val contactUseCase: ContactUseCase,
     private val appState: AppState
 ) : ViewModel() {
+    private val _error = MutableStateFlow<String?>(null)
+    val error = _error.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
 
-    private val _error = MutableStateFlow<String?>(null)
-    val error = _error.asStateFlow()
+    private var _contactsList = MutableStateFlow<List<ContactEntity>>(listOf())
+    val contactsList = _contactsList.asStateFlow()
 
-    private val _contactsState = MutableStateFlow<ContactsState>(ContactsState.Loading)
-    val contactsState: StateFlow<ContactsState> = _contactsState.asStateFlow()
-
-    var isModalVisible by mutableStateOf(false)
-        private set
-
-    var newContactName by mutableStateOf("")
-        private set
-    var newContactCompany by mutableStateOf("")
-        private set
-    var newContactPhone by mutableStateOf("")
-        private set
-    var newContactEmail by mutableStateOf("")
-        private set
-
-    // Get the current user ID from the session manager
-    private val userId = appState.userId.value
-
-    // Function to load contacts for the current user
-    fun loadContacts() {
-        viewModelScope.launch {
-            _contactsState.value = ContactsState.Loading
-
-            if(userId == null) {
-                _error.value = "User ID is null"
-            } else {
-                contactUseCase.getAllContacts(userId)
-                    .onSuccess { contacts ->
-                        _contactsState.value = ContactsState.Success(contacts)
-                    }
-                    .onFailure { error ->
-                        _contactsState.value = ContactsState.Error(error.message ?: "Unknown error")
-                    }
-            }
-        }
+    init {
+        refreshContactsList()
     }
 
-    // Function to create a new contact
-    fun createContact() {
-        if (newContactName.isBlank()) {
-            _contactsState.value = ContactsState.Error("Name cannot be empty")
-            return
-        }
+    fun createContact(
+        name: String,
+        company: String?,
+        phoneNumber: String?,
+        contactEmail: String?
+    ) {
+        val userId = appState.userId.value
 
         viewModelScope.launch {
-            val currentState = _contactsState.value
-            _contactsState.value = ContactsState.Loading
+            if(userId != null) {
+                _isLoading.value = true
 
-            if(userId == null) {
-                _error.value = "User ID is null"
-            } else {
-                contactUseCase.createContact(
-                    userId = userId,
-                    name = newContactName,
-                    company = if (newContactCompany.isNotBlank()) newContactCompany else null,
-                    phoneNumber = if (newContactPhone.isNotBlank()) newContactPhone else null,
-                    contactEmail = if (newContactEmail.isNotBlank()) newContactEmail else null
-                ).onSuccess {
-                    clearNewContactForm()
-                    loadContacts()  // Reload the contacts list
-                    toggleModal() // Close the modal after creating
-                }.onFailure { error ->
-                    _contactsState.value = currentState
-                    // You might want to add a specific error state for form errors
+                try {
+                    contactUseCase.createContact(
+                        userId = userId,
+                        name = name,
+                        company = company,
+                        phoneNumber = phoneNumber,
+                        contactEmail = contactEmail
+                    )
+
+                    refreshContactsList()
+                } catch(e: Exception) {
+                    _error.value = e.message ?: "An unexpected error occurred"
                 }
+
+                _isLoading.value = false
             }
         }
     }
 
-    // Function to delete a contact
+    fun editContact(
+        contactId: Int,
+        name: String,
+        company: String?,
+        phoneNumber: String?,
+        contactEmail: String?
+    ) {
+        val userId = appState.userId.value
+
+        viewModelScope.launch {
+            if(userId != null) {
+                _isLoading.value = true
+
+                try {
+                    contactUseCase.editContact(
+                        userId = userId,
+                        contactId = contactId,
+                        name = name,
+                        company = company,
+                        phoneNumber = phoneNumber,
+                        contactEmail = contactEmail
+                    )
+
+                    refreshContactsList()
+                } catch(e: Exception) {
+                    _error.value = e.message ?: "An unexpected error occurred"
+                }
+
+                _isLoading.value = false
+            }
+        }
+    }
+
     fun deleteContact(contactId: Int) {
+        val userId = appState.userId.value
+
         viewModelScope.launch {
-            val currentState = _contactsState.value
-            if(userId == null) {
-                _error.value = "User ID is null"
-            } else {
-            contactUseCase.deleteContact(userId, contactId)
-                .onSuccess {
-                    loadContacts()
+            if(userId != null) {
+                _isLoading.value = true
+
+                try {
+                    contactUseCase.deleteContact(
+                        userId = userId,
+                        contactId = contactId
+                    )
+
+                    refreshContactsList()
+                } catch(e: Exception) {
+                    _error.value = e.message ?: "An unexpected error occurred"
                 }
-                .onFailure { error ->
-                    _contactsState.value =
-                        ContactsState.Error(error.message ?: "Failed to delete contact")
-                }
+                _isLoading.value = false
             }
         }
     }
 
-    // Functions to toggle the modal visibility
-    fun toggleModal() {
-        isModalVisible = !isModalVisible
+    private fun refreshContactsList() {
+        val userId = appState.userId.value
+
+        viewModelScope.launch {
+            if(userId != null) {
+                _isLoading.value = true
+                try {
+                    val result = contactUseCase.getAllContacts(userId)
+
+                    result.fold(
+                        onSuccess = { contacts ->
+                            _contactsList.value = contacts
+                            _error.value = null
+                        },
+                        onFailure = {
+                            exception ->
+                            _error.value = exception.message ?: "Failed to load contacts"
+                        }
+                    )
+                } catch(e: Exception) {
+                    _error.value = e.message ?: "An unexpected error occurred"
+                } finally {
+                    _isLoading.value = false
+                }
+            } else {
+                _error.value = "Contacts list can't be refreshed when user ID is null"
+            }
+        }
     }
 
-    // Function to update new contact form fields
-    fun updateNewContactName(name: String) {
-        newContactName = name
-    }
+    fun logout() {
+        val userId = appState.userId.value
 
-    fun updateNewContactCompany(company: String) {
-        newContactCompany = company
-    }
+        viewModelScope.launch {
+            if(userId != null) {
+                _isLoading.value = true
 
-    fun updateNewContactPhone(phone: String) {
-        newContactPhone = phone
-    }
-
-    fun updateNewContactEmail(email: String) {
-        newContactEmail = email
-    }
-
-    // Function to clear the new contact form
-    private fun clearNewContactForm() {
-        newContactName = ""
-        newContactCompany = ""
-        newContactPhone = ""
-        newContactEmail = ""
-    }
-
-    // Sealed class to represent the different states of the contacts list
-    sealed class ContactsState {
-        object Loading : ContactsState()
-        data class Success(val contacts: List<ContactEntity>) : ContactsState()
-        data class Error(val message: String) : ContactsState()
+                //TODO Improve error handling
+                try {
+                    userUseCase.logoutUser()
+                } catch(e: Exception) {
+                    _error.value = e.message
+                }
+            } else {
+                _error.value = "Can't logout when there's no user ID"
+            }
+        }
     }
 }

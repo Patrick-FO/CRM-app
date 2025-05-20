@@ -38,7 +38,8 @@ fun Navigation(
 
         composable(Screen.HomeScreen.route) {
             val viewModel = koinViewModel<HomeScreenViewModel>()
-            HomeView(viewModel, navController)
+            val appState = koinInject<AppState>()
+            HomeView(viewModel, navController, appState)
         }
 
         composable(Screen.ContactScreen.route) {

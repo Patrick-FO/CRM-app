@@ -60,11 +60,12 @@ fun LoginView(
 
         Button(
             onClick = {
-                viewModel.loginOnClick()
-                if(appState.authState.value) {
-                    navController.navigate("home_screen")
+                viewModel.loginOnClick() { success ->
+                    if(success) {
+                        navController.navigate("home_screen")
+                    }
                 }
-                      },
+            },
             enabled = !isLoading
         ) {
             Text(text = "Login")

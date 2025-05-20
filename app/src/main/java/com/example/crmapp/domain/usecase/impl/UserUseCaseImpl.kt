@@ -1,5 +1,6 @@
 package com.example.crmapp.domain.usecase.impl
 
+import android.util.Log
 import com.example.crmapp.data.state.AppState
 import com.example.crmapp.domain.repository.UserRepository
 import com.example.crmapp.domain.usecase.interfaces.UserUseCase
@@ -25,8 +26,11 @@ class UserUseCaseImpl(
             return Result.failure(IllegalArgumentException("Both a username and password are required"))
         }
 
+        //TODO Consider adding safety in case user ID is null, like throwing an error or not returning a successful result, like throwing an error altogether on this function if user ID is null, maybe getOrThrow()?
         val result = userRepository.loginUser(username, password)
+        val userId = getUserId(username, password).getOrNull()
         appState.setAuthState()
+        appState.setUserId(userId)
         return result
     }
 
@@ -35,7 +39,18 @@ class UserUseCaseImpl(
             return Result.failure(IllegalArgumentException("Both a username and password are required"))
         }
 
-        return userRepository.getUserId(username, password)
+        val result = userRepository.getUserId(username, password)
+
+        if(result.isSuccess) {
+            val userId = result.getOrNull()
+            if(userId != null) {
+                appState.setUserId(userId)
+            }
+        } else {
+            println("Failed to get user ID: ${result.exceptionOrNull()?.message}")
+        }
+
+        return result
     }
 
     override suspend fun isUserLoggedIn(): Boolean {
@@ -50,6 +65,7 @@ class UserUseCaseImpl(
         return try {
             userRepository.logoutUser()
             appState.setAuthState()
+            appState.setUserId(null)
             Result.success(true)
         } catch(e: Exception) {
             Result.failure(e)

@@ -41,7 +41,7 @@ class LoginViewModel(
         _toastMessage.value = null
     }
 
-    fun loginOnClick() {
+    fun loginOnClick(onComplete: (Boolean) -> Unit = {}) {
         viewModelScope.launch {
             try {
                 _isLoading.value = true
@@ -50,6 +50,7 @@ class LoginViewModel(
                 if (username.value.isBlank() || password.value.isBlank()) {
                     _error.value = "Username and password cannot be empty"
                     _toastMessage.value = "Please fill in both username and password"
+                    onComplete(false)
                     return@launch
                 }
 
@@ -62,13 +63,16 @@ class LoginViewModel(
 
                     _toastMessage.value = "Successfully logged in"
                     _password.value = ""
+                    onComplete(true)
                 } else {
                     _error.value = result.exceptionOrNull()?.message ?: "Unknown error occurred"
                     _toastMessage.value = "An error occurred, please try again"
+                    onComplete(false)
                 }
             } catch (e: Exception) {
                 _error.value = e.message ?: "An error occurred during login"
                 _toastMessage.value = "An error occurred, please try again"
+                onComplete(false)
             } finally {
                 _isLoading.value = false
             }
