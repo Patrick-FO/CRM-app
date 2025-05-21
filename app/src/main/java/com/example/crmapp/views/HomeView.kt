@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.crmapp.views
 
 import androidx.compose.animation.animateColorAsState
