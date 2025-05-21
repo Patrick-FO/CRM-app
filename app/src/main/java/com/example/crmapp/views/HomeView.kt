@@ -1,6 +1,7 @@
 package com.example.crmapp.views
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -47,6 +48,17 @@ fun HomeView(
 ) {
     val selectedContact = remember { mutableStateOf<ContactEntity?>(null)}
     val showDialog = remember { mutableStateOf(false) }
+    val showSpeedDial = remember { mutableStateOf(false) }
+
+    val rotationAngle by animateFloatAsState(
+        targetValue = if (showSpeedDial.value) 45f else 0f,
+        label = "fabRotation"
+    )
+
+    val fabColor by animateColorAsState(
+        targetValue = if(showSpeedDial.value) Color(0xFFF44336) else Color(0xFF2196F3),
+        label = "fabColor"
+    )
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -128,17 +140,6 @@ fun HomeView(
                                 }
                             )
                         })
-
-                    /*ContactCard(
-                        onEditClick = {
-                            selectedContact.value = contact
-                            showDialog.value = true
-                        },
-                        contact = contact,
-                        onCardClick = {
-                            navController.navigate("contact_screen")
-                        }
-                    )*/
                 }
             }
         }

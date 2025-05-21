@@ -30,9 +30,7 @@ fun CrmAppBar(title: String, onBackButtonClick: () -> Unit) {
                         contentDescription = null
                     )
                 }
-            }
-
-            if(title.contains("Notes")) {
+            } else {
                 IconButton(onClick = { onBackButtonClick() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
