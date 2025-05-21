@@ -22,8 +22,7 @@ import com.example.crmapp.viewmodels.LoginViewModel
 @Composable
 fun LoginView(
     viewModel: LoginViewModel,
-    navController: NavController,
-    appState: AppState
+    navController: NavController
 ) {
     val toastMessage by viewModel.toastMessage.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()

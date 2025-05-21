@@ -32,8 +32,7 @@ fun Navigation(
 
         composable(Screen.LoginScreen.route) {
             val viewModel = koinViewModel<LoginViewModel>()
-            val appState = koinInject<AppState>()
-            LoginView(viewModel, navController, appState)
+            LoginView(viewModel, navController)
         }
 
         composable(Screen.HomeScreen.route) {
