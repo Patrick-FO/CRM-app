@@ -1,7 +1,5 @@
 package com.example.crmapp.domain.model.entities
 
-import java.util.UUID
-
 data class NoteEntity(
     val id: Int,
     val userId: String,

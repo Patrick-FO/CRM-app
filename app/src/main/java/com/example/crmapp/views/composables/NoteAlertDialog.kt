@@ -55,16 +55,14 @@ fun NoteFormDialog(
     noteViewModel: ContactScreenViewModel,
     appState: AppState,
     noteToEdit: NoteEntity? = null,
-    preSelectedContactId: Int? = null // This allows us to pre-select a contact
+    preSelectedContactId: Int? = null
 ) {
     val isEditing = noteToEdit != null
     val contacts by homeViewModel.contactsList.collectAsState()
 
-    // State for form fields
     var title by remember { mutableStateOf(noteToEdit?.title ?: "") }
     var description by remember { mutableStateOf(noteToEdit?.description ?: "") }
 
-    // State for selected contacts - initialize with either the note's contacts or the pre-selected contact
     var selectedContactIds by remember {
         mutableStateOf(
             when {
@@ -180,7 +178,7 @@ fun NoteFormDialog(
                         .height(48.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer, // Same as FAB
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
                         contentColor = Color.Black,
                         disabledContainerColor = Color(0xFFE0E0E0),
                         disabledContentColor = Color(0xFF9E9E9E)
@@ -195,7 +193,6 @@ fun NoteFormDialog(
                         modifier = Modifier.fillMaxWidth(),
                         contentAlignment = Alignment.Center
                     ) {
-                        // Centered text
                         Text(
                             text = if(isEditing) "Update Note" else "Create Note",
                             style = MaterialTheme.typography.labelLarge.copy(
@@ -203,7 +200,6 @@ fun NoteFormDialog(
                             )
                         )
 
-                        // Icon positioned to the left side
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.Start,

@@ -1,7 +1,6 @@
 package com.example.crmapp.views
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,11 +15,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.rememberDismissState
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,12 +32,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.crmapp.data.state.AppState
-import com.example.crmapp.domain.model.entities.ContactEntity
 import com.example.crmapp.domain.model.entities.NoteEntity
 import com.example.crmapp.viewmodels.ContactScreenViewModel
 import com.example.crmapp.viewmodels.HomeScreenViewModel
-import com.example.crmapp.views.composables.ContactCard
-import com.example.crmapp.views.composables.ContactFormDialog
 import com.example.crmapp.views.composables.CrmAppBar
 import com.example.crmapp.views.composables.NoteCard
 import com.example.crmapp.views.composables.NoteFormDialog
@@ -86,7 +79,6 @@ fun ContactView(
         }
     ) { paddingValues ->
 
-        // Note Edit Dialog
         if (showNoteEditDialog.value && selectedNoteForEdit.value != null) {
             NoteFormDialog(
                 onDismiss = {
@@ -126,7 +118,6 @@ fun ContactView(
                         val dismissState = rememberDismissState(
                             confirmStateChange = { dismissValue ->
                                 if (dismissValue == DismissValue.DismissedToEnd || dismissValue == DismissValue.DismissedToStart) {
-                                    // Delete the note
                                     viewModel.deleteNote(note.id)
                                 }
                                 true
@@ -137,22 +128,27 @@ fun ContactView(
                             state = dismissState,
                             background = {
                                 val color by animateColorAsState(
-                                    targetValue = if (dismissState.dismissDirection == DismissDirection.EndToStart)
-                                        Color.Red else Color.Transparent,
-                                    label = "swipe_background_color"
+                                    if(dismissState.dismissDirection == DismissDirection.EndToStart) Color.Red else Color.Transparent,
+                                    label = ""
                                 )
+
                                 Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .background(color)
-                                        .padding(horizontal = 20.dp),
-                                    contentAlignment = Alignment.CenterEnd
+                                    modifier = Modifier.fillMaxSize()
                                 ) {
-                                    androidx.compose.material.Icon(
-                                        imageVector = Icons.Default.Delete,
-                                        contentDescription = "Delete note",
-                                        tint = Color.White
-                                    )
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(start = 30.dp)
+                                            .background(color)
+                                            .padding(horizontal = 20.dp),
+                                        contentAlignment = Alignment.CenterEnd
+                                    ) {
+                                        androidx.compose.material.Icon(
+                                            Icons.Default.Delete,
+                                            contentDescription = "Delete icon",
+                                            tint = Color.White
+                                        )
+                                    }
                                 }
                             },
                             directions = setOf(DismissDirection.EndToStart),
@@ -160,10 +156,9 @@ fun ContactView(
                             dismissContent = {
                                 NoteCard(
                                     onEditClick = {
-                                        selectedNoteForEdit.value = note
                                         showNoteEditDialog.value = true
                                     },
-                                    note = note
+                                    note = note,
                                 )
                             },
                             modifier = Modifier.padding(vertical = 8.dp)

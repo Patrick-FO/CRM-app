@@ -1,7 +1,6 @@
 package com.example.crmapp.domain.repository
 
 import com.example.crmapp.domain.model.entities.ContactEntity
-import java.util.UUID
 
 interface ContactRepository {
     suspend fun getAllContacts(userId: String): Result<List<ContactEntity>>

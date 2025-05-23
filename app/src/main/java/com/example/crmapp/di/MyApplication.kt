@@ -1,7 +1,6 @@
 package com.example.crmapp.di
 
 import android.app.Application
-import com.example.crmapp.di.modules.appModule
 import com.example.crmapp.di.modules.networkModule
 import com.example.crmapp.di.modules.repositoryModule
 import com.example.crmapp.di.modules.securityModule
@@ -23,7 +22,6 @@ class MyApplication: Application() {
             //Why are we declaring android context?
             androidContext(this@MyApplication)
             modules(listOf(
-                appModule,
                 securityModule,
                 stateModule,
                 repositoryModule,

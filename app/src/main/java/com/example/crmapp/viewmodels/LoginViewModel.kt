@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.crmapp.data.state.AppState
 import com.example.crmapp.domain.usecase.interfaces.UserUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 

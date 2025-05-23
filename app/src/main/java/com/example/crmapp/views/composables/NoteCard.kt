@@ -9,11 +9,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -33,12 +31,6 @@ fun NoteCard(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 4.dp,
             pressedElevation = 2.dp
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = Color.Black,
-            disabledContainerColor = Color(0xFFE0E0E0),
-            disabledContentColor = Color(0xFF9E9E9E)
         )
     ) {
         Row() {

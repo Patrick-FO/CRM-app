@@ -51,11 +51,8 @@ class SignupViewModel(
 
                 val result = userUseCase.createUser(username.value, password.value)
 
-                // Handle the result
                 if (result.isSuccess) {
                     _toastMessage.value = "Account created successfully"
-                    // Success case - you might want to navigate or show a message
-                    // This will depend on how you want to structure your app
                 } else {
                     _error.value = result.exceptionOrNull()?.message ?: "Unknown error occurred"
                     _toastMessage.value = "An error occurred, please try again"

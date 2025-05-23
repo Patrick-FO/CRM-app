@@ -1,6 +1,5 @@
 package com.example.crmapp.domain.usecase.impl
 
-import android.util.Log
 import com.example.crmapp.data.state.AppState
 import com.example.crmapp.domain.repository.UserRepository
 import com.example.crmapp.domain.usecase.interfaces.UserUseCase

@@ -3,7 +3,6 @@ package com.example.crmapp.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.crmapp.data.state.AppState
-import com.example.crmapp.domain.model.entities.ContactEntity
 import com.example.crmapp.domain.model.entities.NoteEntity
 import com.example.crmapp.domain.usecase.interfaces.ContactUseCase
 import com.example.crmapp.domain.usecase.interfaces.NoteUseCase

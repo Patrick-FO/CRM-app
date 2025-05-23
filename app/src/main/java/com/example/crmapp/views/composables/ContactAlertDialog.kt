@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -38,7 +37,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.crmapp.data.state.AppState
@@ -152,7 +150,7 @@ fun ContactFormDialog(
                         .height(48.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer, // Same as FAB
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
                         contentColor = Color.Black,
                         disabledContainerColor = Color(0xFFE0E0E0),
                         disabledContentColor = Color(0xFF9E9E9E)
@@ -167,7 +165,6 @@ fun ContactFormDialog(
                         modifier = Modifier.fillMaxWidth(),
                         contentAlignment = Alignment.Center
                     ) {
-                        // Centered text
                         Text(
                             text = if(isEditing) "Update Contact" else "Create Contact",
                             style = MaterialTheme.typography.labelLarge.copy(
@@ -175,7 +172,6 @@ fun ContactFormDialog(
                             )
                         )
 
-                        // Icon positioned to the left side
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.Start,

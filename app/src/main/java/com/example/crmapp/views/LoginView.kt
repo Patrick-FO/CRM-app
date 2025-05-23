@@ -11,18 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -41,7 +33,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.crmapp.data.state.AppState
 import com.example.crmapp.viewmodels.LoginViewModel
 
 @Composable
@@ -103,9 +94,9 @@ fun LoginView(
                 .fillMaxWidth(0.3f)
                 .height(56.dp)
                 .padding(8.dp),
-            shape = RoundedCornerShape(16.dp), // More rounded for modern look
+            shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary, // Primary color for main action
+                containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = Color.White,
                 disabledContainerColor = Color(0xFFE0E0E0),
                 disabledContentColor = Color(0xFF9E9E9E)
@@ -139,7 +130,6 @@ fun LoginView(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-// SIGNUP NAVIGATION BUTTON - Secondary action
         TextButton(
             onClick = { navController.navigate("signup_screen") },
             enabled = !isLoading,

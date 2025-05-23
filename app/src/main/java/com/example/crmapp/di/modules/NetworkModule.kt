@@ -37,7 +37,7 @@ val networkModule = module {
 
     single<Retrofit> {
         Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8082/api/") //Consider making this configurable, but why?
+            .baseUrl("http://10.0.2.2:8082/api/") //Consider making this configurable, but why? So that we can easily change the base URL?
             .client(get())
             .addConverterFactory(GsonConverterFactory.create(get()))
             .build()
