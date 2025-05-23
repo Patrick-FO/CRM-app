@@ -3,7 +3,6 @@ package com.example.crmapp.api.interfaces
 import com.example.crmapp.api.responses.JwtResponse
 import com.example.crmapp.api.requests.UserRequest
 import retrofit2.Response
-import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
 

@@ -9,7 +9,7 @@ interface NoteRepository {
 
     suspend fun createNote(userId: String, contactIds: List<Int>, title: String, description: String): Result<NoteEntity>
 
-    suspend fun editNote(userId: String, noteId: Int, contactIds: List<Int>, title: String, description: String): Result<Boolean>
+    suspend fun editNote(userId: String, noteId: Int, contactIds: List<Int>, title: String, description: String?): Result<Boolean>
 
     suspend fun deleteNote(userId: String, noteId: Int): Result<Boolean>
 }

@@ -34,7 +34,7 @@ fun CrmAppBar(title: String, onBackButtonClick: () -> Unit) {
                 IconButton(onClick = { onBackButtonClick() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        tint = Color.White,
+                        tint = Color.Black,
                         contentDescription = null
                     )
                 }

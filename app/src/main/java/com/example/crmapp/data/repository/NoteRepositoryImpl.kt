@@ -85,7 +85,7 @@ class NoteRepositoryImpl(private val noteApiService: NoteApiService): NoteReposi
         noteId: Int,
         contactIds: List<Int>,
         title: String,
-        description: String
+        description: String?
     ): Result<Boolean> =
         withContext(Dispatchers.IO) {
             try {

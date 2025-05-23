@@ -64,7 +64,7 @@ class NoteUseCaseImpl(
         noteId: Int,
         contactIds: List<Int>,
         title: String,
-        description: String
+        description: String?
     ): Result<Boolean> {
         if(userId.isBlank()) {
             return Result.failure(IllegalArgumentException("User ID must not be blank"))
@@ -82,11 +82,7 @@ class NoteUseCaseImpl(
             return Result.failure(IllegalArgumentException("Title must not be blank"))
         }
 
-        if(description.isBlank()) {
-            return Result.failure(IllegalArgumentException("Description must not be blank"))
-        }
-
-        return noteRepository.editNote(userId, noteId, contactIds, title, description)
+        return noteRepository.editNote(userId, noteId, contactIds, title, description ?: "")
     }
 
     override suspend fun deleteNote(userId: String, noteId: Int): Result<Boolean> {

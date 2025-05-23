@@ -8,7 +8,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val viewModelModule = module {
-    viewModel { ContactScreenViewModel(get(), get()) }
+    viewModel { ContactScreenViewModel(get(), get(), get()) }
     viewModel { HomeScreenViewModel(get(), get(), get()) }
     viewModel { LoginViewModel(get(), get()) }
     viewModel { SignupViewModel(get()) }

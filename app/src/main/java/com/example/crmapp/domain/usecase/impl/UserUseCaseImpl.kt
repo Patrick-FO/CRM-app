@@ -65,7 +65,7 @@ class UserUseCaseImpl(
         return try {
             userRepository.logoutUser()
             appState.setAuthState()
-            appState.setUserId(null)
+            appState.clearUserId()
             Result.success(true)
         } catch(e: Exception) {
             Result.failure(e)
