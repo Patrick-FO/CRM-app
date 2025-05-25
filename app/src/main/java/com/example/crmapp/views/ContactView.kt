@@ -157,6 +157,7 @@ fun ContactView(
                                 NoteCard(
                                     onEditClick = {
                                         showNoteEditDialog.value = true
+                                        selectedNoteForEdit.value = note
                                     },
                                     note = note,
                                 )
