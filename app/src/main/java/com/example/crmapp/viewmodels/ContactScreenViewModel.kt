@@ -3,6 +3,7 @@ package com.example.crmapp.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.crmapp.data.state.AppState
+import com.example.crmapp.domain.model.entities.ContactEntity
 import com.example.crmapp.domain.model.entities.NoteEntity
 import com.example.crmapp.domain.usecase.interfaces.ContactUseCase
 import com.example.crmapp.domain.usecase.interfaces.NoteUseCase
@@ -27,24 +28,29 @@ class ContactScreenViewModel(
     private var _notesList = MutableStateFlow<List<NoteEntity>>(listOf())
     val notesList = _notesList.asStateFlow()
 
-    fun loadContactData() {
-        getContactName()
-        refreshNotesList()
+    private var _contactsList = MutableStateFlow<List<ContactEntity>>(listOf())
+    val contactsList = _contactsList.asStateFlow()
+
+    private var currentContactId: Int? = null
+
+    fun loadContactData(contactId: Int) {
+        currentContactId = contactId
+        getContactName(contactId)
+        refreshNotesList(contactId)
     }
 
     fun clearData() {
         _contactName.value = null
         _notesList.value = emptyList()
         _error.value = null
+        currentContactId = null
     }
 
-    //TODO Go look over this function and make sure its good
-    fun getContactName() {
+    private fun getContactName(contactId: Int) {
         val userId = appState.userId.value
-        val contactId = appState.selectedContactId.value
         viewModelScope.launch {
             _isLoading.value = true
-            if(userId != null && contactId != null) {
+            if(userId != null) {
                 try {
                     contactUseCase.getContactById(userId, contactId).fold(
                         onSuccess = {
@@ -58,19 +64,18 @@ class ContactScreenViewModel(
                     _error.value = e.message ?: "An unexpected error occurred"
                 }
             } else {
-                _error.value = "User ID or contact ID is empty"
+                _error.value = "User ID is empty"
             }
             _isLoading.value = false
         }
     }
 
-    fun refreshNotesList() {
+    private fun refreshNotesList(contactId: Int) {
         val userId = appState.userId.value
-        val contactId = appState.selectedContactId.value
 
         viewModelScope.launch {
             _isLoading.value = true
-            if(userId != null && contactId != null) {
+            if(userId != null) {
                 try {
                     noteUseCase.getNotesForContact(userId, contactId).fold(
                         onSuccess = { result ->
@@ -84,7 +89,7 @@ class ContactScreenViewModel(
                     _error.value = e.message
                 }
             } else {
-                _error.value = "User ID or contact ID is empty"
+                _error.value = "User ID is empty"
             }
             _isLoading.value = false
         }
@@ -108,8 +113,12 @@ class ContactScreenViewModel(
                         title = title,
                         description = description ?: ""
                     )
-                    //TODO Maybe give function below a purpose by implementing ability to add notes directly on the contact screen?
-                    //refreshNotesList()
+                    // Refresh the notes list if we're viewing a contact that's included in the note
+                    currentContactId?.let { contactId ->
+                        if (contactIds.contains(contactId)) {
+                            refreshNotesList(contactId)
+                        }
+                    }
                 } catch(e: Exception) {
                     _error.value = e.message ?: "An unexpected error occurred"
                 }
@@ -126,7 +135,7 @@ class ContactScreenViewModel(
         contactIds: List<Int>,
         title: String,
         description: String?
-        ) {
+    ) {
         val userId = appState.userId.value
 
         viewModelScope.launch {
@@ -136,15 +145,18 @@ class ContactScreenViewModel(
                 if(userId != null && noteId >= 1) {
                     try {
                         noteUseCase.editNote(userId, noteId, contactIds, title, description)
-                        refreshNotesList()
+                        // Refresh the notes list for the current contact
+                        currentContactId?.let { contactId ->
+                            refreshNotesList(contactId)
+                        }
                     } catch(e: Exception) {
                         _error.value = e.message
                     }
                 } else {
-                    _error.value = "User ID or contact ID is empty"
+                    _error.value = "User ID or note ID is invalid"
                 }
             } catch(e: Exception) {
-                _error.value = e.message ?: "An unexpected error occured"
+                _error.value = e.message ?: "An unexpected error occurred"
             }
 
             _isLoading.value = false
@@ -160,7 +172,10 @@ class ContactScreenViewModel(
             if (userId != null) {
                 try {
                     noteUseCase.deleteNote(userId, noteId)
-                    refreshNotesList()
+                    // Refresh the notes list for the current contact
+                    currentContactId?.let { contactId ->
+                        refreshNotesList(contactId)
+                    }
                 } catch (e: Exception) {
                     _error.value = e.message ?: "An unexpected error occurred"
                 }
@@ -169,6 +184,36 @@ class ContactScreenViewModel(
             }
 
             _isLoading.value = false
+        }
+    }
+
+    private fun refreshContactsList() {
+        val userId = appState.userId.value
+
+        viewModelScope.launch {
+            if(userId != null) {
+                _isLoading.value = true
+                try {
+                    val result = contactUseCase.getAllContacts(userId)
+
+                    result.fold(
+                        onSuccess = { contacts ->
+                            _contactsList.value = contacts
+                            _error.value = null
+                        },
+                        onFailure = {
+                                exception ->
+                            _error.value = exception.message ?: "Failed to load contacts"
+                        }
+                    )
+                } catch(e: Exception) {
+                    _error.value = e.message ?: "An unexpected error occurred"
+                } finally {
+                    _isLoading.value = false
+                }
+            } else {
+                _error.value = "Contacts list can't be refreshed when user ID is null"
+            }
         }
     }
 }

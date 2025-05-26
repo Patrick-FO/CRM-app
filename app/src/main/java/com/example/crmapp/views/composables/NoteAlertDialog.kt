@@ -59,6 +59,7 @@ fun NoteFormDialog(
     val viewModel: ContactScreenViewModel = getViewModel()
 
     val isEditing = noteToEdit != null
+    val contacts = viewModel.contactsList
     //TODO Get list of contacts from viewmodel
 
     var title by remember { mutableStateOf(noteToEdit?.title ?: "") }

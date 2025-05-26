@@ -34,7 +34,6 @@ import androidx.navigation.NavController
 import com.example.crmapp.data.state.AppState
 import com.example.crmapp.domain.model.entities.NoteEntity
 import com.example.crmapp.viewmodels.ContactScreenViewModel
-import com.example.crmapp.viewmodels.HomeScreenViewModel
 import com.example.crmapp.views.composables.CrmAppBar
 import com.example.crmapp.views.composables.NoteCard
 import com.example.crmapp.views.composables.NoteFormDialog
@@ -49,15 +48,12 @@ fun ContactView(
 ) {
     val contactName by viewModel.contactName.collectAsState()
     val notesList by viewModel.notesList.collectAsState()
-    //TODO Get selected contact id from home view passed in navigation
 
     val showNoteEditDialog = remember { mutableStateOf(false) }
     val selectedNoteForEdit = remember { mutableStateOf<NoteEntity?>(null) }
 
-    LaunchedEffect(selectedContactId) {
-        if(selectedContactId.value != null) {
-            viewModel.loadContactData()
-        }
+    LaunchedEffect(contactId) {
+        viewModel.loadContactData(contactId)
     }
 
     DisposableEffect(Unit) {
@@ -72,7 +68,7 @@ fun ContactView(
             CrmAppBar(
                 title = contactName ?: "Loading contact name...",
                 onBackButtonClick = {
-                    navController.navigate("home_screen")
+                    navController.navigateUp()
                 }
             )
         }
@@ -86,7 +82,7 @@ fun ContactView(
                 },
                 appState = appState,
                 noteToEdit = selectedNoteForEdit.value,
-                preSelectedContactId = selectedContactId.value
+                preSelectedContactId = contactId
             )
         }
 

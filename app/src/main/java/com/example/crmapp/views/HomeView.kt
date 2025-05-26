@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.crmapp.data.state.AppState
 import com.example.crmapp.domain.model.entities.ContactEntity
+import com.example.crmapp.navigation.Screen
 import com.example.crmapp.viewmodels.ContactScreenViewModel
 import com.example.crmapp.viewmodels.HomeScreenViewModel
 import com.example.crmapp.views.composables.ContactCard
@@ -245,7 +246,7 @@ fun HomeView(
                                 },
                                 contact = contact,
                                 onCardClick = {
-                                    navController.navigate("contact_screen")
+                                    navController.navigate(Screen.ContactScreen.createRoute(contact.id))
                                 }
                             )
                         },
