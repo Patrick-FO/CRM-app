@@ -64,7 +64,6 @@ import com.example.crmapp.views.composables.NoteFormDialog
 @Composable
 fun HomeView(
     viewModel: HomeScreenViewModel,
-    noteViewModel: ContactScreenViewModel,
     navController: NavController,
     appState: AppState
 ) {
@@ -179,8 +178,6 @@ fun HomeView(
         if(showNoteCreationDialog.value) {
             NoteFormDialog(
                 onDismiss = { showNoteCreationDialog.value = false },
-                homeViewModel = viewModel,
-                noteViewModel = noteViewModel,
                 appState = appState
             )
         }
@@ -249,8 +246,7 @@ fun HomeView(
                                 contact = contact,
                                 onCardClick = {
                                     navController.navigate("contact_screen")
-                                },
-                                appState = appState
+                                }
                             )
                         },
                         modifier = Modifier.padding(vertical = 8.dp)

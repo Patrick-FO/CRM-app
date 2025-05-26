@@ -43,13 +43,13 @@ import com.example.crmapp.views.composables.NoteFormDialog
 @Composable
 fun ContactView(
     viewModel: ContactScreenViewModel,
-    homeScreenViewModel: HomeScreenViewModel,
     navController: NavController,
-    appState: AppState
+    appState: AppState,
+    contactId: Int
 ) {
     val contactName by viewModel.contactName.collectAsState()
     val notesList by viewModel.notesList.collectAsState()
-    val selectedContactId = appState.selectedContactId.collectAsState()
+    //TODO Get selected contact id from home view passed in navigation
 
     val showNoteEditDialog = remember { mutableStateOf(false) }
     val selectedNoteForEdit = remember { mutableStateOf<NoteEntity?>(null) }
@@ -73,7 +73,6 @@ fun ContactView(
                 title = contactName ?: "Loading contact name...",
                 onBackButtonClick = {
                     navController.navigate("home_screen")
-                    appState.clearSelectedContact()
                 }
             )
         }
@@ -85,8 +84,6 @@ fun ContactView(
                     showNoteEditDialog.value = false
                     selectedNoteForEdit.value = null
                 },
-                homeViewModel = homeScreenViewModel,
-                noteViewModel = viewModel,
                 appState = appState,
                 noteToEdit = selectedNoteForEdit.value,
                 preSelectedContactId = selectedContactId.value

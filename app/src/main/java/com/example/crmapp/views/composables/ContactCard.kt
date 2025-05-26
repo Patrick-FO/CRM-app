@@ -24,12 +24,10 @@ fun ContactCard(
     onEditClick: () -> Unit,
     onCardClick: () -> Unit,
     contact: ContactEntity,
-    appState: AppState
 ) {
     Card(modifier = Modifier
         .padding(horizontal = 16.dp)
         .clickable {
-            appState.setSelectedContact(contact.id)
             onCardClick()
         },
         elevation = CardDefaults.cardElevation(

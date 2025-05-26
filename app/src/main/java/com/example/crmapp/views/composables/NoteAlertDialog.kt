@@ -42,23 +42,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.example.crmapp.data.state.AppState
 import com.example.crmapp.domain.model.entities.NoteEntity
 import com.example.crmapp.viewmodels.ContactScreenViewModel
-import com.example.crmapp.viewmodels.HomeScreenViewModel
+import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteFormDialog(
     onDismiss: () -> Unit,
-    homeViewModel: HomeScreenViewModel,
-    noteViewModel: ContactScreenViewModel,
     appState: AppState,
     noteToEdit: NoteEntity? = null,
     preSelectedContactId: Int? = null
 ) {
+    val viewModel: ContactScreenViewModel = getViewModel()
+
     val isEditing = noteToEdit != null
-    val contacts by homeViewModel.contactsList.collectAsState()
+    //TODO Get list of contacts from viewmodel
 
     var title by remember { mutableStateOf(noteToEdit?.title ?: "") }
     var description by remember { mutableStateOf(noteToEdit?.description ?: "") }
@@ -155,14 +156,14 @@ fun NoteFormDialog(
                     onClick = {
                         if (appState.userId.value != null && selectedContactIds.isNotEmpty() && title.isNotBlank()) {
                             if (isEditing && noteToEdit != null) {
-                                noteViewModel.editNote(
+                                viewModel.editNote(
                                     noteId = noteToEdit.id,
                                     contactIds = selectedContactIds.toList(),
                                     title = title,
                                     description = description.ifEmpty { null }
                                 )
                             } else {
-                                noteViewModel.createNote(
+                                viewModel.createNote(
                                     contactIds = selectedContactIds.toList(),
                                     title = title,
                                     description = description.ifEmpty { null }

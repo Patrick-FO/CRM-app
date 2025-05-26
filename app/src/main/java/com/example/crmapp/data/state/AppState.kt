@@ -14,9 +14,6 @@ class AppState(
     private val _userId = MutableStateFlow<String?>(null)
     val userId: StateFlow<String?> = _userId.asStateFlow()
 
-    private val _selectedContactId = MutableStateFlow<Int?>(null)
-    val selectedContactId = _selectedContactId.asStateFlow()
-
     fun setAuthState() {
         _authState.value = jwtStorage.hasJwt()
     }
@@ -27,13 +24,5 @@ class AppState(
 
     fun clearUserId() {
         _userId.value = null
-    }
-
-    fun setSelectedContact(contactId: Int) {
-        _selectedContactId.value = contactId
-    }
-
-    fun clearSelectedContact() {
-        _selectedContactId.value = null
     }
 }
