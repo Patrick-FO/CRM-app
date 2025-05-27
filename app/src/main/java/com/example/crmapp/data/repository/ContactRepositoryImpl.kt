@@ -6,9 +6,15 @@ import com.example.crmapp.domain.model.entities.ContactEntity
 import com.example.crmapp.domain.model.toDomain
 import com.example.crmapp.domain.repository.ContactRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 
 class ContactRepositoryImpl(private val contactApiService: ContactApiService): ContactRepository {
+
+    private val _contactList = MutableStateFlow<List<ContactEntity>>(listOf())
+    val contactList = _contactList.asStateFlow()
+
     override suspend fun getAllContacts(userId: String): Result<List<ContactEntity>> =
         withContext(Dispatchers.IO) {
             try {

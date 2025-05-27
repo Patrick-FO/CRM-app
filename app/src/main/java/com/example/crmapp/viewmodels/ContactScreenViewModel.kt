@@ -33,15 +33,21 @@ class ContactScreenViewModel(
 
     private var currentContactId: Int? = null
 
+    init {
+        refreshContactsList()
+    }
+
     fun loadContactData(contactId: Int) {
         currentContactId = contactId
         getContactName(contactId)
         refreshNotesList(contactId)
+        refreshContactsList()
     }
 
     fun clearData() {
         _contactName.value = null
         _notesList.value = emptyList()
+        _contactsList.value = emptyList()
         _error.value = null
         currentContactId = null
     }

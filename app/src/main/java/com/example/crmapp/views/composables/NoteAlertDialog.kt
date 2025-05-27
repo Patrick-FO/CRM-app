@@ -59,7 +59,7 @@ fun NoteFormDialog(
     val viewModel: ContactScreenViewModel = getViewModel()
 
     val isEditing = noteToEdit != null
-    val contacts = viewModel.contactsList
+    val contacts = viewModel.contactsList.collectAsState()
     //TODO Get list of contacts from viewmodel
 
     var title by remember { mutableStateOf(noteToEdit?.title ?: "") }
@@ -92,9 +92,9 @@ fun NoteFormDialog(
                 ) {
                     Text(
                         text = if(isEditing) {
-                            "Edit contact"
+                            "Edit note"
                         } else {
-                            "Create contact"
+                            "Create note"
                         },
                         fontWeight = FontWeight.Bold,
                         fontSize = 24.sp
@@ -127,7 +127,7 @@ fun NoteFormDialog(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(
-                            items = contacts,
+                            items = contacts.value,
                             key = { contact -> contact.id }
                         ) { contact ->
                             FilterChip(
