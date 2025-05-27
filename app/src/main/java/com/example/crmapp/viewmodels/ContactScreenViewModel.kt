@@ -8,6 +8,7 @@ import com.example.crmapp.domain.model.entities.ContactEntity
 import com.example.crmapp.domain.model.entities.NoteEntity
 import com.example.crmapp.domain.usecase.interfaces.ContactUseCase
 import com.example.crmapp.domain.usecase.interfaces.NoteUseCase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -181,6 +182,7 @@ class ContactScreenViewModel(
 
             if (userId != null) {
                 try {
+                    delay(300)
                     noteUseCase.deleteNote(userId, noteId)
                     currentContactId?.let { contactId ->
                         refreshNotesList(contactId)

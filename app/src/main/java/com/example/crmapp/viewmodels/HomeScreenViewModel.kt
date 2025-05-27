@@ -6,6 +6,7 @@ import com.example.crmapp.data.state.AppState
 import com.example.crmapp.domain.cache.ContactCacheManager
 import com.example.crmapp.domain.model.entities.ContactEntity
 import com.example.crmapp.domain.usecase.interfaces.UserUseCase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -89,6 +90,7 @@ class HomeScreenViewModel(
 
         viewModelScope.launch {
             if(userId != null) {
+                delay(300)
                 contactCacheManager.deleteContact(
                     userId = userId,
                     contactId = contactId

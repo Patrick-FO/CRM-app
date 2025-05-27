@@ -1,6 +1,9 @@
 package com.example.crmapp.views
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,6 +29,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -108,55 +112,66 @@ fun ContactView(
                         items = notesList,
                         key = { note -> note.id }
                     ) { note ->
-                        val dismissState = rememberDismissState(
-                            confirmStateChange = { dismissValue ->
-                                if (dismissValue == DismissValue.DismissedToEnd || dismissValue == DismissValue.DismissedToStart) {
-                                    viewModel.deleteNote(note.id)
-                                }
-                                true
-                            }
-                        )
+                        var isVisible by remember { mutableStateOf(true) }
 
-                        SwipeToDismiss(
-                            state = dismissState,
-                            background = {
-                                val color by animateColorAsState(
-                                    if(dismissState.dismissDirection == DismissDirection.EndToStart) Color.Red else Color.Transparent,
-                                    label = ""
-                                )
-
-                                Box(
-                                    modifier = Modifier.fillMaxSize()
-                                ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(start = 30.dp)
-                                            .background(color)
-                                            .padding(horizontal = 20.dp),
-                                        contentAlignment = Alignment.CenterEnd
-                                    ) {
-                                        androidx.compose.material.Icon(
-                                            Icons.Default.Delete,
-                                            contentDescription = "Delete icon",
-                                            tint = Color.White
-                                        )
+                        AnimatedVisibility(
+                            visible = isVisible,
+                            exit = slideOutHorizontally(
+                                targetOffsetX = { -it },
+                                animationSpec = tween(durationMillis = 300)
+                            )
+                        ) {
+                            val dismissState = rememberDismissState(
+                                confirmStateChange = { dismissValue ->
+                                    if (dismissValue == DismissValue.DismissedToEnd || dismissValue == DismissValue.DismissedToStart) {
+                                        isVisible = false
+                                        viewModel.deleteNote(note.id)
                                     }
+                                    true
                                 }
-                            },
-                            directions = setOf(DismissDirection.EndToStart),
-                            dismissThresholds = { FractionalThreshold(0.25f) },
-                            dismissContent = {
-                                NoteCard(
-                                    onEditClick = {
-                                        showNoteEditDialog.value = true
-                                        selectedNoteForEdit.value = note
-                                    },
-                                    note = note,
-                                )
-                            },
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
+                            )
+
+                            SwipeToDismiss(
+                                state = dismissState,
+                                background = {
+                                    val color by animateColorAsState(
+                                        if(dismissState.dismissDirection == DismissDirection.EndToStart) Color.Red else Color.Transparent,
+                                        label = ""
+                                    )
+
+                                    Box(
+                                        modifier = Modifier.fillMaxSize()
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .padding(start = 30.dp)
+                                                .background(color)
+                                                .padding(horizontal = 20.dp),
+                                            contentAlignment = Alignment.CenterEnd
+                                        ) {
+                                            androidx.compose.material.Icon(
+                                                Icons.Default.Delete,
+                                                contentDescription = "Delete icon",
+                                                tint = Color.White
+                                            )
+                                        }
+                                    }
+                                },
+                                directions = setOf(DismissDirection.EndToStart),
+                                dismissThresholds = { FractionalThreshold(0.25f) },
+                                dismissContent = {
+                                    NoteCard(
+                                        onEditClick = {
+                                            showNoteEditDialog.value = true
+                                            selectedNoteForEdit.value = note
+                                        },
+                                        note = note,
+                                    )
+                                },
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+                        }
                     }
                 }
             }
