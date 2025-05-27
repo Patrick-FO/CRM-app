@@ -1,6 +1,7 @@
 package com.example.crmapp.di
 
 import android.app.Application
+import com.example.crmapp.di.modules.cacheModule
 import com.example.crmapp.di.modules.networkModule
 import com.example.crmapp.di.modules.repositoryModule
 import com.example.crmapp.di.modules.securityModule
@@ -27,7 +28,8 @@ class MyApplication: Application() {
                 repositoryModule,
                 useCaseModule,
                 viewModelModule,
-                networkModule
+                networkModule,
+                cacheModule
             ))
         }
     }

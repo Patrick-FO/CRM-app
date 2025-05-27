@@ -41,6 +41,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -72,6 +73,10 @@ fun HomeView(
     val showContactDialog = remember { mutableStateOf(false) }
     val showNoteCreationDialog = remember { mutableStateOf(false) }
     val showSpeedDial = remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.refreshContactsList()
+    }
 
     val rotationAngle by animateFloatAsState(
         targetValue = if (showSpeedDial.value) 45f else 0f,

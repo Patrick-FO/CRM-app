@@ -26,11 +26,12 @@ fun Navigation(
     navController: NavHostController = rememberNavController()
 ) {
     val appState = koinInject<AppState>()
-    val isAuthenticated by appState.authState.collectAsState()
+    //TODO Use later to establish persistent login
+    //val isAuthenticated by appState.authState.collectAsState()
 
     NavHost(
         navController = navController,
-        startDestination = if(isAuthenticated) Screen.HomeScreen.route else Screen.LoginScreen.route
+        startDestination = Screen.LoginScreen.route
     ) {
         composable(Screen.SignupScreen.route) {
             val viewModel = koinViewModel<SignupViewModel>()

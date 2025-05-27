@@ -3,16 +3,18 @@ package com.example.crmapp.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.crmapp.data.state.AppState
+import com.example.crmapp.domain.cache.ContactCacheManager
 import com.example.crmapp.domain.model.entities.ContactEntity
 import com.example.crmapp.domain.model.entities.NoteEntity
 import com.example.crmapp.domain.usecase.interfaces.ContactUseCase
 import com.example.crmapp.domain.usecase.interfaces.NoteUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ContactScreenViewModel(
-    private val contactUseCase: ContactUseCase,
+    private val contactCacheManager: ContactCacheManager,
     private val noteUseCase: NoteUseCase,
     private val appState: AppState
 ): ViewModel() {
@@ -28,28 +30,32 @@ class ContactScreenViewModel(
     private var _notesList = MutableStateFlow<List<NoteEntity>>(listOf())
     val notesList = _notesList.asStateFlow()
 
-    private var _contactsList = MutableStateFlow<List<ContactEntity>>(listOf())
-    val contactsList = _contactsList.asStateFlow()
+    val contactsList: StateFlow<List<ContactEntity>> = contactCacheManager.cachedContacts
 
     private var currentContactId: Int? = null
-
-    init {
-        refreshContactsList()
-    }
 
     fun loadContactData(contactId: Int) {
         currentContactId = contactId
         getContactName(contactId)
         refreshNotesList(contactId)
-        refreshContactsList()
+        ensureContactsAreLoaded()
     }
 
     fun clearData() {
         _contactName.value = null
         _notesList.value = emptyList()
-        _contactsList.value = emptyList()
         _error.value = null
         currentContactId = null
+    }
+
+    private fun ensureContactsAreLoaded() {
+        val userId = appState.userId.value
+
+        if (userId != null && !contactCacheManager.hasCachedDataForUser(userId)) {
+            viewModelScope.launch {
+                contactCacheManager.getContacts(userId)
+            }
+        }
     }
 
     private fun getContactName(contactId: Int) {
@@ -58,9 +64,9 @@ class ContactScreenViewModel(
             _isLoading.value = true
             if(userId != null) {
                 try {
-                    contactUseCase.getContactById(userId, contactId).fold(
-                        onSuccess = {
-                            _contactName.value = it.name
+                    contactCacheManager.getContactById(userId, contactId).fold(
+                        onSuccess = { contact ->
+                            _contactName.value = contact.name
                         },
                         onFailure = { exception ->
                             _error.value = exception.message ?: "Failed to load contact name"
@@ -119,7 +125,6 @@ class ContactScreenViewModel(
                         title = title,
                         description = description ?: ""
                     )
-                    // Refresh the notes list if we're viewing a contact that's included in the note
                     currentContactId?.let { contactId ->
                         if (contactIds.contains(contactId)) {
                             refreshNotesList(contactId)
@@ -151,7 +156,6 @@ class ContactScreenViewModel(
                 if(userId != null && noteId >= 1) {
                     try {
                         noteUseCase.editNote(userId, noteId, contactIds, title, description)
-                        // Refresh the notes list for the current contact
                         currentContactId?.let { contactId ->
                             refreshNotesList(contactId)
                         }
@@ -178,7 +182,6 @@ class ContactScreenViewModel(
             if (userId != null) {
                 try {
                     noteUseCase.deleteNote(userId, noteId)
-                    // Refresh the notes list for the current contact
                     currentContactId?.let { contactId ->
                         refreshNotesList(contactId)
                     }
@@ -190,36 +193,6 @@ class ContactScreenViewModel(
             }
 
             _isLoading.value = false
-        }
-    }
-
-    private fun refreshContactsList() {
-        val userId = appState.userId.value
-
-        viewModelScope.launch {
-            if(userId != null) {
-                _isLoading.value = true
-                try {
-                    val result = contactUseCase.getAllContacts(userId)
-
-                    result.fold(
-                        onSuccess = { contacts ->
-                            _contactsList.value = contacts
-                            _error.value = null
-                        },
-                        onFailure = {
-                                exception ->
-                            _error.value = exception.message ?: "Failed to load contacts"
-                        }
-                    )
-                } catch(e: Exception) {
-                    _error.value = e.message ?: "An unexpected error occurred"
-                } finally {
-                    _isLoading.value = false
-                }
-            } else {
-                _error.value = "Contacts list can't be refreshed when user ID is null"
-            }
         }
     }
 }

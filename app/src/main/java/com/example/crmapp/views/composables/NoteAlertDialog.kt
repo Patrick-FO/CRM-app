@@ -59,8 +59,8 @@ fun NoteFormDialog(
     val viewModel: ContactScreenViewModel = getViewModel()
 
     val isEditing = noteToEdit != null
-    val contacts = viewModel.contactsList.collectAsState()
-    //TODO Get list of contacts from viewmodel
+    val contacts by viewModel.contactsList.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     var title by remember { mutableStateOf(noteToEdit?.title ?: "") }
     var description by remember { mutableStateOf(noteToEdit?.description ?: "") }
@@ -127,7 +127,7 @@ fun NoteFormDialog(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(
-                            items = contacts.value,
+                            items = contacts,
                             key = { contact -> contact.id }
                         ) { contact ->
                             FilterChip(
@@ -172,7 +172,7 @@ fun NoteFormDialog(
                             }
                             onDismiss()
                         }
-                        // TODO: Add proper validation and error handling
+                        // TODO: Add better validation and error handling
                     },
                     enabled = selectedContactIds.isNotEmpty() && title.isNotBlank(),
                     modifier = Modifier
