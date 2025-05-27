@@ -46,15 +46,18 @@ fun NoteCard(
                     fontSize = 20.sp
                 )
 
-                //TODO We can probably fix desc nullability issue in if statement below
+                //TODO Figure out what's what. Is description even nullable in our backend? Can the description come back as null? Or does it come back as blank?
+                //I believe that the description only comes back as blank, and not as null. Worth looking into though
 
                 if (note.description != null) {
-                    Spacer(modifier = Modifier.height(8.dp))
+                    if(note.description.isNotBlank()) {
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                    Text(
-                        text = note.description,
-                        lineHeight = 18.sp
-                    )
+                        Text(
+                            text = note.description,
+                            lineHeight = 18.sp
+                        )
+                    }
                 }
             }
 
@@ -65,8 +68,8 @@ fun NoteCard(
                 modifier = Modifier
                     .padding(10.dp)
                     .clickable {
-                    onEditClick()
-                }
+                        onEditClick()
+                    }
             )
         }
     }

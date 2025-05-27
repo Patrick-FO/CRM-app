@@ -52,10 +52,6 @@ class NoteUseCaseImpl(
             return Result.failure(IllegalArgumentException("Title must not be blank"))
         }
 
-        if(description.isBlank()) {
-            return Result.failure(IllegalArgumentException("Description must not be blank"))
-        }
-
         return noteRepository.createNote(userId, contactIds, title, description)
     }
 
