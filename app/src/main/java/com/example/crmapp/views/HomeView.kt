@@ -12,6 +12,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -179,6 +180,9 @@ fun HomeView(
             }
         }
     ) { paddingValues ->
+
+        val contacts = viewModel.contactsList.collectAsState()
+
         if(showContactDialog.value) {
             ContactFormDialog(onDismiss = { showContactDialog.value = false }, viewModel = viewModel, appState = appState, contactToEdit = selectedContact.value)
         }
@@ -194,82 +198,93 @@ fun HomeView(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = if (contacts.value.isEmpty()) Arrangement.Center else Arrangement.Top
         ) {
-            val contacts = viewModel.contactsList.collectAsState()
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                items(
-                    items = contacts.value,
-                    key = {contact -> contact.id}
-                ) { contact ->
-                    var isVisible by remember { mutableStateOf(true) }
+            if(contacts.value.isNotEmpty()) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    items(
+                        items = contacts.value,
+                        key = { contact -> contact.id }
+                    ) { contact ->
+                        var isVisible by remember { mutableStateOf(true) }
 
-                    AnimatedVisibility(
-                        visible = isVisible,
-                        exit = slideOutHorizontally(
-                            targetOffsetX = { -it },
-                            animationSpec = tween(durationMillis = 300)
-                        )
-                    ) {
-                        val dismissState = rememberDismissState(
-                            confirmStateChange = { dismissValue ->
-                                if(dismissValue == DismissValue.DismissedToEnd || dismissValue == DismissValue.DismissedToStart) {
-                                    isVisible = false
-                                    viewModel.deleteContact(contact.id)
+                        AnimatedVisibility(
+                            visible = isVisible,
+                            exit = slideOutHorizontally(
+                                targetOffsetX = { -it },
+                                animationSpec = tween(durationMillis = 300)
+                            )
+                        ) {
+                            val dismissState = rememberDismissState(
+                                confirmStateChange = { dismissValue ->
+                                    if (dismissValue == DismissValue.DismissedToEnd || dismissValue == DismissValue.DismissedToStart) {
+                                        isVisible = false
+                                        viewModel.deleteContact(contact.id)
+                                    }
+                                    true
                                 }
-                                true
-                            }
-                        )
+                            )
 
-                        SwipeToDismiss(
-                            state = dismissState,
-                            background = {
-                                val color by animateColorAsState(
-                                    if(dismissState.dismissDirection == DismissDirection.EndToStart) Color.Red else Color.Transparent,
-                                    label = ""
-                                )
+                            SwipeToDismiss(
+                                state = dismissState,
+                                background = {
+                                    val color by animateColorAsState(
+                                        if (dismissState.dismissDirection == DismissDirection.EndToStart) Color.Red else Color.Transparent,
+                                        label = ""
+                                    )
 
-                                Box(
-                                    modifier = Modifier.fillMaxSize()
-                                ) {
                                     Box(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(start = 30.dp)
-                                            .background(color)
-                                            .padding(horizontal = 20.dp),
-                                        contentAlignment = Alignment.CenterEnd
+                                        modifier = Modifier.fillMaxSize()
                                     ) {
-                                        androidx.compose.material.Icon(
-                                            Icons.Default.Delete,
-                                            contentDescription = "Delete icon",
-                                            tint = Color.White
-                                        )
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .padding(start = 30.dp)
+                                                .background(color)
+                                                .padding(horizontal = 20.dp),
+                                            contentAlignment = Alignment.CenterEnd
+                                        ) {
+                                            androidx.compose.material.Icon(
+                                                Icons.Default.Delete,
+                                                contentDescription = "Delete icon",
+                                                tint = Color.White
+                                            )
+                                        }
                                     }
-                                }
-                            },
-                            directions = setOf(DismissDirection.EndToStart),
-                            dismissThresholds = { FractionalThreshold(0.25f) },
-                            dismissContent = {
-                                ContactCard(
-                                    onEditClick = {
-                                        selectedContact.value = contact
-                                        showContactDialog.value = true
-                                    },
-                                    contact = contact,
-                                    onCardClick = {
-                                        navController.navigate(Screen.ContactScreen.createRoute(contact.id))
-                                    }
-                                )
-                            },
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
+                                },
+                                directions = setOf(DismissDirection.EndToStart),
+                                dismissThresholds = { FractionalThreshold(0.25f) },
+                                dismissContent = {
+                                    ContactCard(
+                                        onEditClick = {
+                                            selectedContact.value = contact
+                                            showContactDialog.value = true
+                                        },
+                                        contact = contact,
+                                        onCardClick = {
+                                            navController.navigate(
+                                                Screen.ContactScreen.createRoute(
+                                                    contact.id
+                                                )
+                                            )
+                                        }
+                                    )
+                                },
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+                        }
                     }
                 }
+            } else {
+                Text(
+                    text = "No contacts yet",
+
+                )
             }
         }
     }
