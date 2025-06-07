@@ -53,8 +53,8 @@ fun ContactFormDialog(
 ) {
     val isEditing = contactToEdit != null
 
-    var name by remember { mutableStateOf(contactToEdit?.name ?: "")}
-    var company by remember { mutableStateOf(contactToEdit?.company ?: "")}
+    var name by remember { mutableStateOf(contactToEdit?.name ?: "") }
+    var company by remember { mutableStateOf(contactToEdit?.company ?: "") }
     var phoneNumber by remember { mutableStateOf(contactToEdit?.phoneNumber ?: "")}
     var contactEmail by remember { mutableStateOf(contactToEdit?.contactEmail ?: "")}
 
@@ -128,16 +128,16 @@ fun ContactFormDialog(
                                 viewModel.editContact(
                                     contactId = contactToEdit!!.id,
                                     name = name,
-                                    company = company.ifEmpty { null },
-                                    phoneNumber = phoneNumber.ifEmpty { null },
-                                    contactEmail = contactEmail.ifEmpty { null }
+                                    company = if (company.isBlank()) null else company,
+                                    phoneNumber = if (phoneNumber.isBlank()) null else phoneNumber,
+                                    contactEmail = if (contactEmail.isBlank()) null else contactEmail
                                 )
                             } else {
                                 viewModel.createContact(
                                     name = name,
-                                    company = company.ifEmpty { null },
-                                    phoneNumber = phoneNumber.ifEmpty { null },
-                                    contactEmail = contactEmail.ifEmpty { null }
+                                    company = if (company.isBlank()) null else company,
+                                    phoneNumber = if (phoneNumber.isBlank()) null else phoneNumber,
+                                    contactEmail = if (contactEmail.isBlank()) null else contactEmail
                                 )
                             }
                         }

@@ -21,6 +21,7 @@ class HomeScreenViewModel(
     val error = _error.asStateFlow()
 
     val contactsList: StateFlow<List<ContactEntity>> = contactCacheManager.cachedContacts
+    //TODO implement isLoading
     val isLoading: StateFlow<Boolean> = contactCacheManager.isLoading
 
     fun createContact(
